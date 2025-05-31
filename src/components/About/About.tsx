@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import profilePic from "../../assets/pic.jpg";
-import FloatingParticles from "../FloatingParticles/FloatingParticles";
+import SectionParticles from "../SectionParticles/SectionsParticles";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -48,7 +48,14 @@ export function About() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 px-4 bg-secondary/10">
+    <section ref={sectionRef} className="py-24 px-4 bg-secondary/10 relative">
+      <SectionParticles
+        color="#940A31"
+        count={200}
+        size={0.5}
+        opacity={0.2}
+        zIndex={-5}
+      />
       <div className="max-w-4xl mx-auto">
         <h2 className="about-heading text-4xl md:text-5xl font-bold text-center mb-16">
           About Me
@@ -59,7 +66,7 @@ export function About() {
             <div className="md:w-1/3">
               <div className="rounded-full overflow-hidden w-48 h-48 mx-auto border-4 border-primary/20">
                 <img
-                  src= {profilePic}
+                  src={profilePic}
                   alt="Fady Damak"
                   className="w-full h-full object-cover"
                 />

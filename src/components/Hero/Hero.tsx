@@ -1,6 +1,7 @@
 import { useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { gsap } from "gsap";
+import { Link as ScrollLink } from "react-scroll";
 import WaveBackground from "../WaveBackground/WaveBackground";
 
 interface HeroProps {
@@ -10,7 +11,7 @@ interface HeroProps {
 }
 
 export function Hero({
-  name = "Your Name",
+  name,
   title = "Software Developer",
   description = "I build modern web applications with React, TypeScript, and cutting-edge technologies.",
 }: HeroProps) {
@@ -29,7 +30,6 @@ export function Hero({
         },
       });
 
-      // Set initial opacity to prevent flash
       gsap.set(
         [nameRef.current, titleRef.current, descRef.current, btnRef.current],
         {
@@ -72,12 +72,14 @@ export function Hero({
     return () => ctx.revert();
   }, []);
 
+  
+
   return (
     <section
       ref={heroRef}
       className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 text-center overflow-hidden"
     >
-      <WaveBackground opacity={0.4}/>
+      <WaveBackground opacity={0.4} />
 
       <div className="max-w-3xl relative z-10">
         <h1
@@ -92,17 +94,32 @@ export function Hero({
         >
           {title}
         </h2>
-        <p
-          ref={descRef}
-          className="mt-6 text-lg md:text-xl "
-        >
+        <p ref={descRef} className="mt-6 text-lg md:text-xl ">
           {description}
         </p>
 
         <div ref={btnRef} className="mt-8 flex gap-4 justify-center">
-          <Button size="lg">View My Work</Button>
-          <Button variant="outline" size="lg">
-            Contact Me
+          <Button size="lg" asChild>
+            <ScrollLink
+              to="projects"
+              spy={true}
+              smooth={true}
+              duration={500}
+              offset={-70}
+            >
+              View My Work
+            </ScrollLink>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <ScrollLink
+              to="contact"
+              spy={true}
+              smooth={true}
+              duration={500}
+              offset={-70}
+            >
+              Contact Me
+            </ScrollLink>
           </Button>
         </div>
       </div>
