@@ -87,15 +87,20 @@ function ProjectCard({
   }, []);
 
   return (
-    <section 
+    <section
       id="projects"
       ref={cardRef}
       className={`relative flex flex-col lg:flex-row gap-8 ${
         index % 2 === 1 ? "lg:flex-row-reverse" : ""
       } mb-16`}
     >
-      <SectionParticles color="#4169E1" count={100} size={0.2}  />
-
+      <SectionParticles
+        color="#940A31"
+        count={10}
+        size={0.3}
+        opacity={0.2}
+        zIndex={-5}
+      />
       <div className="lg:w-1/2">
         <div className="relative overflow-hidden rounded-lg aspect-video bg-muted">
           <img

@@ -52,7 +52,7 @@ export function About() {
       <SectionParticles
         color="#940A31"
         count={200}
-        size={0.5}
+        size={0.3}
         opacity={0.2}
         zIndex={-5}
       />

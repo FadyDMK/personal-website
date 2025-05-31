@@ -1,6 +1,7 @@
 import Hero from "./components/Hero/Hero";
 import Projects from "./components/Projects/Projects";
 import About from "./components/About/About";
+import SectionParticles from "./components/SectionParticles/SectionsParticles";
 
 function App() {
   return (
@@ -10,7 +11,15 @@ function App() {
         title="Full Stack Developer"
         description="I create software solutions that empower businesses and enhance user experiences. Let's build something great together!"
       />
+      <SectionParticles
+        color="#940A31"
+        count={10}
+        size={0.3}
+        opacity={0.2}
+        zIndex={-5}
+      />
       <About />
+      
       <Projects />
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <span className="sr-only">Scroll down</span>
