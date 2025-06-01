@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, memo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   EffectComposer,
@@ -8,10 +8,9 @@ import {
 import * as THREE from "three";
 import FloatingParticles from "../FloatingParticles/FloatingParticles";
 
-
 function GradientBackground({
   color1 = "#fafcfc",
-  color2="#191c1b",
+  color2 = "#191c1b",
   distribution = 0.85,
 }) {
   const materialRef = useRef(null);
@@ -144,19 +143,30 @@ function NeonWaves({ opacity = 0.8 }) {
   );
 }
 
-function WaveBackground({ opacity = 0.8 }) {
+const WaveBackground = memo(({ opacity = 0.8 }: { opacity: number }) => {
   const gradientStyle = {
     width: "100%",
     height: "100%",
     background:
       "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(4, 4, 133, 1) 50%)",
   };
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uColorA: { value: new THREE.Color("#0042ff") },
+      uColorB: { value: new THREE.Color("#00fff2") },
+    }),
+    []
+  );
 
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
       <div style={gradientStyle}>
-        <Canvas camera={{ position: [0, -11, 5], fov: 10 }}>
-          <GradientBackground  />
+        <Canvas camera={{ position: [0, -11, 5], fov: 10 }}
+          dpr={[1, 2]}
+          performance={{ min: 0.5 }}
+        >
+          <GradientBackground />
 
           <NeonWaves opacity={opacity} />
 
@@ -174,6 +184,6 @@ function WaveBackground({ opacity = 0.8 }) {
       </div>
     </div>
   );
-}
+});
 
 export default WaveBackground;

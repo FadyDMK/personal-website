@@ -1,25 +1,43 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { gsap } from "gsap";
 import { Link as ScrollLink } from "react-scroll";
+import { useTypewriter, Cursor } from "react-simple-typewriter";
 import WaveBackground from "../WaveBackground/WaveBackground";
 
-interface HeroProps {
-  name?: string;
-  title?: string;
-  description?: string;
+function TerminalIntro() {
+  const [text] = useTypewriter({
+    words: [
+      "> Full Stack Developer",
+      "> Computer Science Engineering Student",
+      "> Constant Learner",
+      "> Ready for my next challenge!",
+    ],
+    loop: 3,
+    typeSpeed: 70,
+    deleteSpeed: 20,
+    delaySpeed: 1500,
+  });
+
+  return (
+    <div className="font-mono bg-black/80 text-green-400 p-4 text-center rounded-md shadow-lg max-w-lg mx-auto mb-8">
+      <div className="flex gap-2 mb-2">
+        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+      </div>
+      <div className="h-24 flex items-center justify-center text-lg">
+        <span>{text}</span>
+        <Cursor cursorColor="white" />
+      </div>
+    </div>
+  );
 }
 
-export function Hero({
-  name,
-  title = "Software Developer",
-  description = "I build modern web applications with React, TypeScript, and cutting-edge technologies.",
-}: HeroProps) {
+export function Hero({name="Fady Damak"}) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLHeadingElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -30,49 +48,22 @@ export function Hero({
         },
       });
 
-      gsap.set(
-        [nameRef.current, titleRef.current, descRef.current, btnRef.current],
-        {
-          opacity: 0,
-          y: 20,
-        }
-      );
+      // Only target elements that exist
+      gsap.set([btnRef.current], {
+        opacity: 0,
+        y: 20,
+      });
 
-      tl.to(nameRef.current, {
+      // Simple animation sequence
+      tl.to(btnRef.current, {
         opacity: 1,
         y: 0,
         delay: 0.2,
-      })
-        .to(
-          titleRef.current,
-          {
-            opacity: 1,
-            y: 0,
-          },
-          "-=0.6"
-        )
-        .to(
-          descRef.current,
-          {
-            opacity: 1,
-            y: 0,
-          },
-          "-=0.6"
-        )
-        .to(
-          btnRef.current,
-          {
-            opacity: 1,
-            y: 0,
-          },
-          "-=0.6"
-        );
+      });
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
-
-  
 
   return (
     <section
@@ -84,19 +75,12 @@ export function Hero({
       <div className="max-w-3xl relative z-10">
         <h1
           ref={nameRef}
-          className="text-5xl md:text-7xl font-bold tracking-tight text-black drop-shadow-sm"
+          className="text-5xl md:text-7xl font-bold tracking-tight text-black drop-shadow-sm pb-4 md:pb-6"
         >
           {name}
         </h1>
-        <h2
-          ref={titleRef}
-          className="text-2xl md:text-3xl mt-4 text-primary drop-shadow-sm"
-        >
-          {title}
-        </h2>
-        <p ref={descRef} className="mt-6 text-lg md:text-xl ">
-          {description}
-        </p>
+
+        <TerminalIntro />
 
         <div ref={btnRef} className="mt-8 flex gap-4 justify-center">
           <Button size="lg" asChild>
@@ -126,5 +110,4 @@ export function Hero({
     </section>
   );
 }
-
 export default Hero;

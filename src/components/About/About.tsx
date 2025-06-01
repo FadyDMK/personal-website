@@ -1,10 +1,10 @@
 import { useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import profilePic from "../../assets/pic.jpg";
+import profilePic from "../../assets/pic.avif";
 import SectionParticles from "../SectionParticles/SectionsParticles";
+import SkillConstellation from "../SkillConstellation/SkillConstellation";
 
-// Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 export function About() {
@@ -13,7 +13,7 @@ export function About() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Animate heading
+      // heading
       gsap.fromTo(
         ".about-heading",
         { y: 50, opacity: 0 },
@@ -113,8 +113,10 @@ export function About() {
               </div>
             ))}
           </div>
-
-          <h3 className="text-2xl font-bold mt-12 mb-4">My Journey</h3>
+          <div className="relative h-[600px] mb-16">
+            <SkillConstellation/>
+          </div>
+          <h3 className="text-2xl font-bold mt-12 mb-4 pt-[50px]">My Journey</h3>
           <p>
             My journey in IT started when I was a kid amazed by this magic box
             that responds to my commands through a mouse and keyboard. I started

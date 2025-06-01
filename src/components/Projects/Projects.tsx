@@ -1,11 +1,14 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
-import { Github, ExternalLink } from "lucide-react";
-import ProjectMovie from "../../assets/project2.png";
-import ProjectBook from "../../assets/project3.png";
+import { Github, ExternalLink, Info } from "lucide-react";
+import { motion } from "framer-motion";
+
+import ProjectMovie from "../../assets/project2.avif";
+import ProjectBook from "../../assets/project3.avif";
 import SectionParticles from "../SectionParticles/SectionsParticles";
+import ProjectHawkeye from "../../assets/project1.avif";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,12 +21,103 @@ interface ProjectProps {
   liveUrl?: string;
 }
 
+function FlipCard({ project }: { project: ProjectProps }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div
+      className="perspective-1000 relative h-[400px] w-full cursor-pointer"
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <motion.div
+        className="w-full h-full"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Front of card */}
+        <div
+          className="absolute inset-0 backface-hidden rounded-xl overflow-hidden"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <img
+            src={project.imageUrl}
+            alt={project.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+            <h3 className="text-2xl font-bold text-white mb-2">
+              {project.title}
+            </h3>
+            <p className="text-white/80">{project.description}</p>
+            <button className="mt-4 bg-white/10 text-white px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm border border-white/20">
+              <Info size={16} />
+              View Details
+            </button>
+          </div>
+        </div>
+
+        {/* Back of card */}
+        <div
+          className="absolute inset-0 backface-hidden bg-secondary p-6 rounded-xl flex flex-col"
+          style={{
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+          }}
+        >
+          <h3 className="text-2xl font-bold mb-4">{project.title}</h3>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.technologies.map((tech: string) => (
+              <span
+                key={tech}
+                className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <p className="flex-grow">{project.description}</p>
+
+          <div className="flex gap-4 mt-6">
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Github size={20} />
+                Source Code
+              </a>
+            )}
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink size={18} />
+                Live Demo
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 const projects: ProjectProps[] = [
   {
     title: "HawkEye",
     description:
       "A 3D reconstruction app of a volleyball court using SfM techniques",
-    imageUrl: "/project1.jpg",
+    imageUrl: ProjectHawkeye,
     technologies: ["Python", "OpenCV", "PyVista", "NumPy", "Matplotlib"],
     githubUrl: "https://github.com/FadyDMK/hawkeye",
   },
@@ -94,13 +188,6 @@ function ProjectCard({
         index % 2 === 1 ? "lg:flex-row-reverse" : ""
       } mb-16`}
     >
-      <SectionParticles
-        color="#940A31"
-        count={10}
-        size={0.3}
-        opacity={0.2}
-        zIndex={-5}
-      />
       <div className="lg:w-1/2">
         <div className="relative overflow-hidden rounded-lg aspect-video bg-muted">
           <img
@@ -183,14 +270,32 @@ export function Projects() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 px-4 max-w-7xl mx-auto">
+    <section ref={sectionRef} className="relative py-24 px-4 max-w-7xl mx-auto">
+      <SectionParticles
+        color="#940A31"
+        count={500}
+        size={0.1}
+        opacity={0.2}
+        zIndex={-5}
+      />
       <h2 className="projects-heading text-4xl md:text-5xl font-bold text-center mb-16">
         My Projects
       </h2>
 
       <div className="space-y-24">
         {projects.map((project, index) => (
-          <ProjectCard key={project.title} project={project} index={index} />
+          <>
+            <div className="hidden lg:block">
+              <ProjectCard
+                key={project.title}
+                project={project}
+                index={index}
+              />
+            </div>
+            <div className="lg:hidden">
+              <FlipCard key={project.title} project={project} />
+            </div>
+          </>
         ))}
       </div>
     </section>
