@@ -34,6 +34,8 @@ function Terminal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  
+
   // Focus input when terminal opens
   useEffect(() => {
     if (isVisible && inputRef.current) {
@@ -43,15 +45,14 @@ function Terminal() {
     }
   }, [isVisible]);
 
-  // Process command function
+  const audioPersonaRef = useRef<HTMLAudioElement | null>(null);
+
   const processCommand = (cmd: string) => {
     const normalizedCmd = cmd.trim().toLowerCase();
 
-    // Add to history
     setCommandHistory((prev) => [...prev, cmd]);
     setHistoryIndex(-1);
 
-    // Process commands
     if (normalizedCmd === "clear") {
       setResults([]);
       return;
@@ -62,16 +63,71 @@ function Terminal() {
         ...prev,
         {
           type: "text",
-          content: "Available commands: help, clear, act dance, persona ",
+          content:
+            "Available commands: help, clear, act dance, persona, exit vim, flip coin, fortune, credits, matrix",
+        },
+      ]);
+      return;
+    }
+    if (normalizedCmd === "flip coin") {
+      const result = Math.random() > 0.5 ? "Heads" : "Tails";
+      setResults((prev) => [
+        ...prev,
+        {
+          type: "text",
+          content: `Flipping coin... ${result}!`,
+        },
+      ]);
+      return;
+    }
+
+    if (normalizedCmd === "fortune") {
+      const fortunes = [
+        "A beautiful, smart, and loving person will be coming into your life.",
+        "Your code will change the world.",
+        "The greatest risk is not taking one.",
+        "You will refactor legacy code with zero bugs on the first try.",
+        "Your pull request will be approved without any change requests.",
+        "You will find that missing semicolon soon.",
+      ];
+      const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+      setResults((prev) => [
+        ...prev,
+        { type: "text", content: `🔮 ${fortune}` },
+      ]);
+      return;
+    }
+
+    if (normalizedCmd === "exit vim") {
+      setResults((prev) => [
+        ...prev,
+        { type: "error", content: "Cannot exit vim. You're stuck forever." },
+      ]);
+      return;
+    }
+
+    if (normalizedCmd === "credits") {
+      setResults((prev) => [
+        ...prev,
+        { type: "text", content: "✨ Website by Fady Damak ✨" },
+        {
+          type: "text",
+          content: "Technologies: React, TypeScript, Three.js, GSAP, Tailwind",
+        },
+        {
+          type: "text",
+          content:
+            "Inspired by my nerdy aah mind",
         },
       ]);
       return;
     }
 
     if (normalizedCmd.startsWith("persona")) {
-      const audio = new Audio(personaMusic);
-      audio.play();
-
+      if (!audioPersonaRef.current) {
+        audioPersonaRef.current = new Audio(personaMusic);
+      }
+      audioPersonaRef.current.play();
       setResults((prev) => [
         ...prev,
         {
@@ -79,10 +135,31 @@ function Terminal() {
           content: "DISTURBING THE PEAACEE",
         },
       ]);
-      
       return;
     }
-   
+
+    if (normalizedCmd.startsWith("stop")) {
+      if (audioPersonaRef.current && !audioPersonaRef.current.paused) {
+        audioPersonaRef.current.pause();
+        audioPersonaRef.current.currentTime = 0;
+        setResults((prev) => [
+          ...prev,
+          {
+            type: "text",
+            content: "No more persona :(",
+          },
+        ]);
+      } else {
+        setResults((prev) => [
+          ...prev,
+          {
+            type: "text",
+            content: "No audio is currently playing dumbass",
+          },
+        ]);
+      }
+    }
+
     if (normalizedCmd.startsWith("act dance")) {
       setActiveGif(danceGif);
       setTimeout(() => {
@@ -97,7 +174,7 @@ function Terminal() {
         },
       ]);
     }
-    return 
+    return;
   };
 
   // Handle input submission
@@ -191,7 +268,9 @@ function Terminal() {
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <div className="text-white/80 text-xs">Terminal</div>
+              <div className="text-white/80 text-xs">
+                <strong>Terminal</strong>
+              </div>
               <button
                 onClick={() => setIsVisible(false)}
                 className="text-gray-400 hover:text-white"
