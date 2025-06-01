@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import type { PS2LoadingScreenProps } from '@/types/types';
 
 // Here’s how it works: The 7 dots simply move around a circle, 
 // increasing the distance from each other while the sine and cosine parts of the circle go 
@@ -9,9 +10,7 @@ import { motion } from 'framer-motion';
 
 
 
-interface PS2LoadingScreenProps {
-  onLoadingComplete: () => void;
-}
+
 
 function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
   const [progress, setProgress] = useState(0);

@@ -79,40 +79,12 @@ export function About() {
                 full-stack development. A Computer Engineering student at the
                 University of Pécs
               </p>
-              <p>
-                With hands-on experience in JavaScript, TypeScript, C# ,Java
-                ,and Python, strong foundation in software development, web
-                technologies, and agile teamwork. Eager to grow in a fast-paced,
-                collaborative environment.
-              </p>
             </div>
           </div>
 
           <h3 className="text-2xl font-bold mt-12 mb-4">My Skills</h3>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              "JavaScript",
-              "TypeScript",
-              "React",
-              "Java",
-              "SpringBoot",
-              "SvelteKit",
-              "PL/SQL",
-              "PostgreSQL",
-              "Tailwind CSS",
-              "Blender",
-              "Three.js",
-              "Git",
-            ].map((skill) => (
-              <div
-                key={skill}
-                className="bg-card p-3 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow"
-              >
-                {skill}
-              </div>
-            ))}
-          </div>
+          
           <div className="relative h-[600px] mb-16">
             <SkillConstellation/>
           </div>

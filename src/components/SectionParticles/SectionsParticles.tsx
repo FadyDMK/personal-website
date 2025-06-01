@@ -1,13 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import FloatingParticles from "../FloatingParticles/FloatingParticles";
+import type { SectionParticlesProps } from "@/types/types";
 
-interface SectionParticlesProps {
-  color?: string;
-  count?: number;
-  size?: number;
-  opacity?: number;
-  zIndex?: number;
-}
+
 
 function SectionParticles({
   color = "#940A31",

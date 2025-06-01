@@ -9,17 +9,11 @@ import ProjectMovie from "../../assets/project2.avif";
 import ProjectBook from "../../assets/project3.avif";
 import SectionParticles from "../SectionParticles/SectionsParticles";
 import ProjectHawkeye from "../../assets/project1.avif";
+import type { ProjectProps } from "@/types/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ProjectProps {
-  title: string;
-  description: string;
-  imageUrl: string;
-  technologies: string[];
-  githubUrl?: string;
-  liveUrl?: string;
-}
+
 
 function FlipCard({ project }: { project: ProjectProps }) {
   const [isFlipped, setIsFlipped] = useState(false);

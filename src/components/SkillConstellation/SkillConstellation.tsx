@@ -1,298 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import skills from "../../data/skills";
+import type { SkillData } from "@/types/types";
 
 //SKYRIM CONSTELLATION LESSGOO
-
-interface SkillData {
-  id: string;
-  name: string;
-  category: "frontend" | "backend" | "design" | "tools" | "languages";
-  proficiency: number;
-  description?: string;
-  connections?: string[];
-  position?: [number, number];
-}
-
-const skills: SkillData[] = [
-  // Frontend Constellation
-  {
-    id: "react",
-    name: "React",
-    category: "frontend",
-    proficiency: 0.9,
-    description: "Component-based UI library",
-    position: [50, 30],
-    connections: ["typescript", "nextjs", "redux"],
-  },
-  {
-    id: "nextjs",
-    name: "Next.js",
-    category: "frontend",
-    proficiency: 0.8,
-    description: "React framework for production",
-    position: [70, 20],
-    connections: ["react"],
-  },
-  {
-    id: "svelte",
-    name: "Svelte",
-    category: "frontend",
-    proficiency: 0.8,
-    description: "The frontend framework that all devs love but no one uses",
-    position: [30, 40],
-    connections: ["react"],
-  },
-  {
-    id: "threejs",
-    name: "Three.js",
-    category: "frontend",
-    proficiency: 0.75,
-    description: "3D graphics in the browser",
-    position: [60, 50],
-    connections: ["gsap"],
-  },
-  {
-    id: "gsap",
-    name: "GSAP",
-    category: "frontend",
-    proficiency: 0.8,
-    description: "Animation library",
-    position: [40, 60],
-    connections: ["threejs", "css", "react"],
-  },
-  {
-    id: "css",
-    name: "CSS/Tailwind",
-    category: "frontend",
-    proficiency: 0.85,
-    description: "Styling and design",
-    position: [20, 50],
-    connections: ["gsap", "html"],
-  },
-  {
-    id: "html",
-    name: "HTML",
-    category: "frontend",
-    proficiency: 0.9,
-    description: "Web markup language",
-    position: [10, 30],
-    connections: ["css"],
-  },
-  {
-    id: "thymeLeaf",
-    name: "Thymeleaf",
-    category: "frontend",
-    proficiency: 0.6,
-    description: "HTML template generator for SpringBoot",
-    position: [20, 30],
-    connections: ["html"],
-  },
-
-  // Backend Constellation
-  {
-    id: "nodejs",
-    name: "Node.js",
-    category: "backend",
-    proficiency: 0.8,
-    description: "JavaScript runtime",
-    position: [50, 30],
-    connections: ["express", "mongodb"],
-  },
-  {
-    id: "express",
-    name: "Express",
-    category: "backend",
-    proficiency: 0.8,
-    description: "Web framework for Node.js",
-    position: [70, 30],
-    connections: ["nodejs"],
-  },
-  {
-    id: "plsql",
-    name: "PL/SQL",
-    category: "backend",
-    proficiency: 0.7,
-    description: "API query language",
-    position: [60, 50],
-    connections: ["nodejs", "postgres"],
-  },
-  {
-    id: "springboot",
-    name: "SpringBoot",
-    category: "backend",
-    proficiency: 0.75,
-    description: "Java framework for building APIs",
-    position: [30, 60],
-    connections: ["postgres"],
-  },
-  {
-    id: "postgres",
-    name: "PostgreSQL",
-    category: "backend",
-    proficiency: 0.7,
-    description: "Relational database",
-    position: [70, 70],
-    connections: ["prisma"],
-  },
-  {
-    id: "mssql",
-    name: "MS SQL",
-    category: "backend",
-    proficiency: 0.7,
-    description: "Microsoft's relational database",
-    position: [80, 50],
-    connections: ["prisma", "plsql", "postgres"],
-  },
-  {
-    id: "prisma",
-    name: "Prisma",
-    category: "backend",
-    proficiency: 0.65,
-    description: "ORM for TypeScript",
-    position: [90, 60],
-    connections: ["postgres", "typescript"],
-  },
-
-  // Languages Constellation
-  {
-    id: "javascript",
-    name: "JavaScript",
-    category: "languages",
-    proficiency: 0.9,
-    description: "Web programming language",
-    position: [50, 40],
-    connections: ["typescript", "nodejs"],
-  },
-  {
-    id: "typescript",
-    name: "TypeScript",
-    category: "languages",
-    proficiency: 0.85,
-    description: "Typed superset of JavaScript",
-    position: [70, 40],
-    connections: ["javascript", "react", "prisma"],
-  },
-  {
-    id: "python",
-    name: "Python",
-    category: "languages",
-    proficiency: 0.7,
-    description: "General-purpose language",
-    position: [30, 40],
-    connections: ["javascript"],
-  },
-
-  {
-    id: "csharp",
-    name: "C#",
-    category: "languages",
-    proficiency: 0.6,
-    description: "Object-oriented language for .NET",
-    position: [60, 70],
-    connections: ["javascript"],
-  },
-  {
-    id: "java",
-    name: "Java",
-    category: "languages",
-    proficiency: 0.7,
-    description: "Object-oriented language for enterprise",
-    position: [40, 70],
-    connections: ["javascript", "csharp"],
-  },
-  // Tools Constellation
-  {
-    id: "git",
-    name: "Git",
-    category: "tools",
-    proficiency: 0.9,
-    description: "Version control system",
-    position: [40, 30],
-    connections: ["github"],
-  },
-  {
-    id: "github",
-    name: "GitHub",
-    category: "tools",
-    proficiency: 0.85,
-    description: "Code hosting platform",
-    position: [60, 40],
-    connections: ["git", "docker"],
-  },
-  {
-    id: "figma",
-    name: "Figma",
-    category: "tools",
-    proficiency: 0.7,
-    description: "UI/UX design tool",
-    position: [80, 30],
-    connections: [],
-  },
-  {
-    id: "blender",
-    name: "Blender",
-    category: "tools",
-    proficiency: 0.6,
-    description: "3D modeling and animation software",
-    position: [70, 20],
-    connections: ["figma"],
-  },
-  {
-    id: "opencv",
-    name: "OpenCV",
-    category: "tools",
-    proficiency: 0.6,
-    description: "Computer vision library",
-    position: [15, 30],
-    connections: [],
-  },
-  {
-    id: "pyvista",
-    name: "PyVista",
-    category: "tools",
-    proficiency: 0.6,
-    description: "3D visualization library for Python",
-    position: [20, 50],
-    connections: ["opencv"],
-  },
-  {
-    id: "docker",
-    name: "Docker",
-    category: "tools",
-    proficiency: 0.7,
-    description: "Containerization platform",
-    position: [80, 50],
-    connections: ["github"],
-  },
-  {
-    id: "linux",
-    name: "Linux",
-    category: "tools",
-    proficiency: 0.7,
-    description: "Open-source operating system",
-    position: [50, 50],
-    connections: ["docker"],
-  },
-  
-  {
-    id: "bash",
-    name: "Bash Terminal",
-    category: "tools",
-    proficiency: 0.7,
-    description: "Command-line shell and scripting language",
-    position: [35, 40],
-    connections: ["git","linux"],
-  },
-  {
-    id: "aws",
-    name: "AWS",
-    category: "tools",
-    proficiency: 0.65,
-    description: "Cloud services platform",
-    position: [60, 70],
-    connections: ["docker"],
-  },
-];
 
 function SkillConstellation() {
   const [activeCategory, setActiveCategory] = useState<string>("frontend");
@@ -329,29 +40,35 @@ function SkillConstellation() {
     (skill) => skill.category === activeCategory
   );
 
-
   return (
     <div className="relative w-full h-[700px] flex flex-col">
       {/* Category navigation */}
-      <div className="flex justify-center space-x-4 mb-4">
-        {categories.map((category) => (
-          <motion.button
-            key={category}
-            className={`px-4 py-2 rounded-lg text-sm uppercase tracking-wider ${
-              activeCategory === category
-                ? "bg-primary text-white"
-                : "bg-secondary/30 text-primary"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              setActiveCategory(category);
-              setSelectedSkill(null);
-            }}
-          >
-            {category}
-          </motion.button>
-        ))}
+      <div className="relative mb-6">
+        {/* Fade indicators to show scrollable content */}
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#12123e] to-transparent pointer-events-none z-10 md:hidden"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#12123e] to-transparent pointer-events-none z-10 md:hidden"></div>
+
+        {/* Scrollable container */}
+        <div className="flex py-2 px-4 overflow-x-auto no-scrollbar gap-2">
+          {categories.map((category) => (
+            <motion.button
+              key={category}
+              className={`px-4 py-2 rounded-lg text-sm uppercase tracking-wider whitespace-nowrap ${
+                activeCategory === category
+                  ? "bg-primary text-white"
+                  : "bg-secondary/30 text-primary"
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setActiveCategory(category);
+                setSelectedSkill(null);
+              }}
+            >
+              {category}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
       {/* Main constellation view */}
@@ -510,6 +227,13 @@ function SkillConstellation() {
             0% { opacity: 0.3; }
             50% { opacity: 1; }
             100% { opacity: 0.3; }
+          }
+          .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          .no-scrollbar::-webkit-scrollbar {
+             display: none;  /* Chrome, Safari, Opera */
           }
         `}</style>
       </div>
