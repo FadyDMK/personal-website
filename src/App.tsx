@@ -5,6 +5,7 @@ import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 const Hero = lazy(() => import("./components/Hero/Hero"));
 const About = lazy(() => import("./components/About/About"));
 const Projects = lazy(() => import("./components/Projects/Projects"));
+const Contact = lazy(() => import("./components/Contact/Contact"));
 const SectionParticles = lazy(() => import("./components/SectionParticles/SectionsParticles"));
 
 function App() {
@@ -21,7 +22,6 @@ function App() {
     window.addEventListener("pagehide", handlePageHide);
     
     // Give the browser a moment to initialize before hiding the loading screen
-    // This helps prevent the janky rendering of Three.js components
     const timer = setTimeout(() => {
       setContentReady(true);
       
@@ -56,6 +56,7 @@ function App() {
             
             <About />
             <Projects />
+            <Contact />
             
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
               <span className="sr-only">Scroll down</span>

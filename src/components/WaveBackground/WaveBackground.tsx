@@ -59,8 +59,13 @@ function GradientBackground({
 
 function NeonWaves({ opacity = 0.8 }) {
   const meshRef = useRef<THREE.Mesh>(null!);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  const geometry = useMemo(() => new THREE.PlaneGeometry(10, 10, 64, 64), []);
+  const geometry = useMemo(
+    () =>
+      new THREE.PlaneGeometry(10, 10, isMobile ? 32 : 64, isMobile ? 32 : 64),
+    [isMobile]
+  );
 
   const material = useMemo(() => {
     return new THREE.ShaderMaterial({
@@ -150,12 +155,13 @@ const WaveBackground = memo(({ opacity = 0.8 }: { opacity: number }) => {
     background:
       "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(4, 4, 133, 1) 50%)",
   };
-  
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
       <div style={gradientStyle}>
-        <Canvas camera={{ position: [0, -11, 5], fov: 10 }}
+        <Canvas
+          camera={{ position: [0, -11, 5], fov: 10 }}
           dpr={[1, 2]}
           performance={{ min: 0.5 }}
         >
@@ -165,7 +171,7 @@ const WaveBackground = memo(({ opacity = 0.8 }: { opacity: number }) => {
 
           <FloatingParticles count={200} color="#940A31" size={0.5} />
 
-          <EffectComposer>
+          <EffectComposer enabled={!isMobile}>
             <Bloom
               intensity={1}
               luminanceThreshold={0.2}

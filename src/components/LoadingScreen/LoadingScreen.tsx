@@ -204,7 +204,7 @@ function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
         />
       </div>
       
-      <h2 className="text-2xl font-bold text-white mb-4">Loading Experience</h2>
+      <h2 className="text-2xl font-bold text-white mb-4">Hold on to your socks</h2>
       
       <div className="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
         <motion.div 
