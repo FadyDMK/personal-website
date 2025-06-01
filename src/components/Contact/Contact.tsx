@@ -194,7 +194,7 @@ function Contact() {
           {/* Contact Form */}
           <div className="form-container bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-lg border border-blue-900/30 shadow-lg">
             <h3 className="text-2xl font-semibold mb-6 text-white form-element">
-              Send Me a Message
+              Get in touch with me :)
             </h3>
 
             <form ref={formRef} onSubmit={handleSubmit}>

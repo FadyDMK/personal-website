@@ -1,5 +1,7 @@
+// filepath: [App.tsx](http://_vscodecontentref_/0)
 import { lazy, Suspense, useState, useEffect } from "react";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import Terminal from "./components/Terminal/Terminal"; // Import the Terminal component
 
 // Use lazy loading for all components
 const Hero = lazy(() => import("./components/Hero/Hero"));
@@ -40,6 +42,8 @@ function App() {
   return (
     <>
       {isLoading && <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />}
+      
+      <Terminal />
       
       {contentReady && (
         <Suspense fallback={null}>
