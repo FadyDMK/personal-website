@@ -150,14 +150,7 @@ const WaveBackground = memo(({ opacity = 0.8 }: { opacity: number }) => {
     background:
       "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(4, 4, 133, 1) 50%)",
   };
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uColorA: { value: new THREE.Color("#0042ff") },
-      uColorB: { value: new THREE.Color("#00fff2") },
-    }),
-    []
-  );
+  
 
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">

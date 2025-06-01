@@ -91,7 +91,6 @@ function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
         previousTimeRef.current = time;
       }
       
-      const deltaTime = time - previousTimeRef.current;
       previousTimeRef.current = time;
       
       // Clear the canvas
@@ -103,9 +102,6 @@ function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
       
       // Update and render each dot
       dotsRef.current.forEach((dot, i) => {
-        // Save previous position
-        const prevX = dot.x;
-        const prevY = dot.y;
         
         // Calculate new position with PS2 effect
         const angle = (i / dotCount) * Math.PI * 2;

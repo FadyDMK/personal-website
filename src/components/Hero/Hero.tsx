@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { gsap } from "gsap";
 import { Link as ScrollLink } from "react-scroll";

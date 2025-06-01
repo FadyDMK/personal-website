@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { throttle } from 'lodash-es';
 
 //SKYRIM CONSTELLATION LESSGOO
 
@@ -330,11 +329,6 @@ function SkillConstellation() {
     (skill) => skill.category === activeCategory
   );
 
-  const handleSkillSelect = throttle((skill) => {
-    setSelectedSkill(skill);
-
-  }, 150);
-  const visibleSkills = categorySkills.slice(0, 20); 
 
   return (
     <div className="relative w-full h-[700px] flex flex-col">
