@@ -72,7 +72,7 @@ const skills: SkillData[] = [
     category: "frontend",
     proficiency: 0.6,
     description: "HTML template generator for SpringBoot",
-    position: [20, 30],
+    position: [20, 10],
     connections: ["html"],
   },
 
@@ -157,7 +157,7 @@ const skills: SkillData[] = [
     category: "languages",
     proficiency: 0.85,
     description: "Typed superset of JavaScript",
-    position: [70, 40],
+    position: [80, 40],
     connections: ["javascript", "react", "prisma"],
   },
   {
@@ -166,7 +166,7 @@ const skills: SkillData[] = [
     category: "languages",
     proficiency: 0.7,
     description: "General-purpose language",
-    position: [30, 40],
+    position: [20, 40],
     connections: ["javascript"],
   },
 
