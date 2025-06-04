@@ -83,7 +83,7 @@ export function Hero({name="Fady Damak"}) {
         <TerminalIntro />
 
         <div ref={btnRef} className="mt-8 flex gap-4 justify-center">
-          <Button size="lg" asChild>
+          <Button size="lg" asChild className = "cursor-pointer">
             <ScrollLink
               to="projects"
               spy={true}
@@ -94,7 +94,7 @@ export function Hero({name="Fady Damak"}) {
               View My Work
             </ScrollLink>
           </Button>
-          <Button variant="outline" size="lg" asChild>
+          <Button variant="outline" size="lg" asChild className="cursor-pointer">
             <ScrollLink
               to="contact"
               spy={true}

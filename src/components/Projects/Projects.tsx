@@ -13,8 +13,6 @@ import type { ProjectProps } from "@/types/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-
-
 function FlipCard({ project }: { project: ProjectProps }) {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -278,7 +276,7 @@ export function Projects() {
 
       <div className="space-y-24">
         {projects.map((project, index) => (
-          <>
+          <div key={project.title}>
             <div className="hidden lg:block">
               <ProjectCard
                 key={project.title}
@@ -289,7 +287,7 @@ export function Projects() {
             <div className="lg:hidden">
               <FlipCard key={project.title} project={project} />
             </div>
-          </>
+          </div>
         ))}
       </div>
     </section>
