@@ -1,4 +1,4 @@
-import { useRef, useMemo, memo } from "react";
+import { useRef, useMemo, memo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   EffectComposer,
@@ -7,6 +7,34 @@ import {
 } from "@react-three/postprocessing";
 import * as THREE from "three";
 import FloatingParticles from "../FloatingParticles/FloatingParticles";
+
+type DeviceProfile = {
+  isMobile: boolean;
+  prefersReducedMotion: boolean;
+  dpr: number;
+};
+
+const getDeviceProfile = (): DeviceProfile => {
+  if (typeof window === "undefined") {
+    return {
+      isMobile: false,
+      prefersReducedMotion: false,
+      dpr: 1,
+    };
+  }
+
+  const userAgent = navigator.userAgent;
+  const isMobileViewport = window.innerWidth < 768;
+  const prefersReducedMotion =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  return {
+    isMobile: /iPhone|iPad|iPod|Android/i.test(userAgent) || isMobileViewport,
+    prefersReducedMotion,
+    dpr: Math.min(window.devicePixelRatio || 1, 2),
+  };
+};
 
 function GradientBackground({
   color1 = "#fafcfc",
@@ -57,15 +85,22 @@ function GradientBackground({
   );
 }
 
-function NeonWaves({ opacity = 0.8 }) {
+function NeonWaves({
+  opacity = 0.8,
+  isMobile,
+}: {
+  opacity?: number;
+  isMobile: boolean;
+}) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const segments = isMobile ? 32 : 64;
 
   const geometry = useMemo(
-    () =>
-      new THREE.PlaneGeometry(10, 10, isMobile ? 32 : 64, isMobile ? 32 : 64),
-    [isMobile]
+    () => new THREE.PlaneGeometry(10, 10, segments, segments),
+    [segments]
   );
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
 
   const material = useMemo(() => {
     return new THREE.ShaderMaterial({
@@ -73,7 +108,7 @@ function NeonWaves({ opacity = 0.8 }) {
         time: { value: 0 },
         baseColor: { value: new THREE.Color("#416b5f") },
         glowColor: { value: new THREE.Color("#686fa1") },
-        opacity: { value: opacity }, // Add opacity uniform
+        opacity: { value: opacity },
       },
       vertexShader: `
         uniform float time;
@@ -101,7 +136,7 @@ function NeonWaves({ opacity = 0.8 }) {
       fragmentShader: `
         uniform vec3 baseColor;
         uniform vec3 glowColor;
-        uniform float opacity;  // Use the opacity uniform
+        uniform float opacity;
         varying float vWaveHeight;
         
         void main() {
@@ -109,18 +144,17 @@ function NeonWaves({ opacity = 0.8 }) {
           vec3 color = mix(baseColor, glowColor, intensity);
           float brighten = pow(intensity, 1.5) * 0.8;
           color += brighten * glowColor;
-          
-          // Use the opacity uniform here
           gl_FragColor = vec4(color, opacity);
         }
       `,
       transparent: true,
     });
-  }, [opacity]); // Re-create material when opacity changes
+  }, [opacity]);
+
+  useEffect(() => () => material.dispose(), [material]);
 
   useFrame(({ clock }) => {
     material.uniforms.time.value = clock.getElapsedTime();
-
     material.uniforms.opacity.value = opacity;
 
     const time = clock.getElapsedTime();
@@ -148,32 +182,85 @@ function NeonWaves({ opacity = 0.8 }) {
   );
 }
 
-const WaveBackground = memo(({ opacity = 0.8 }: { opacity: number }) => {
+function SceneReadyNotifier({ onReady }: { onReady?: () => void }) {
+  const hasNotifiedRef = useRef(false);
+
+  useFrame(() => {
+    if (!hasNotifiedRef.current) {
+      hasNotifiedRef.current = true;
+      onReady?.();
+    }
+  });
+
+  return null;
+}
+
+const WaveBackground = memo(({ opacity = 0.8, onReady }: { opacity: number; onReady?: () => void }) => {
+  const [deviceProfile, setDeviceProfile] = useState<DeviceProfile>(() => getDeviceProfile());
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleResize = () => setDeviceProfile(getDeviceProfile());
+    window.addEventListener("resize", handleResize);
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleMotionChange = () => setDeviceProfile(getDeviceProfile());
+
+    if (typeof motionQuery.addEventListener === "function") {
+      motionQuery.addEventListener("change", handleMotionChange);
+    } else if (typeof motionQuery.addListener === "function") {
+      motionQuery.addListener(handleMotionChange);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (typeof motionQuery.removeEventListener === "function") {
+        motionQuery.removeEventListener("change", handleMotionChange);
+      } else if (typeof motionQuery.removeListener === "function") {
+        motionQuery.removeListener(handleMotionChange);
+      }
+    };
+  }, []);
+
   const gradientStyle = {
     width: "100%",
     height: "100%",
     background:
       "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(4, 4, 133, 1) 50%)",
   };
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const particleCount = deviceProfile.isMobile ? 90 : 200;
+  const enablePostProcessing = !deviceProfile.isMobile;
+  const dprRange: [number, number] = [1, deviceProfile.dpr];
+  const bloomIntensity = deviceProfile.isMobile ? 0.6 : 1;
 
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
       <div style={gradientStyle}>
         <Canvas
           camera={{ position: [0, -11, 5], fov: 10 }}
-          dpr={[1, 2]}
-          performance={{ min: 0.5 }}
+          dpr={dprRange}
+          performance={{ min: 0.5, max: 1 }}
+          frameloop="always"
+          shadows={false}
         >
+          <SceneReadyNotifier onReady={onReady} />
           <GradientBackground />
 
-          <NeonWaves opacity={opacity} />
+          <NeonWaves
+            opacity={opacity}
+            isMobile={deviceProfile.isMobile}
+          />
 
-          <FloatingParticles count={200} color="#940A31" size={0.5} />
+          <FloatingParticles
+            count={particleCount}
+            color="#940A31"
+            size={deviceProfile.isMobile ? 0.35 : 0.5}
+          />
 
-          <EffectComposer enabled={!isMobile}>
+          <EffectComposer enabled={enablePostProcessing}>
             <Bloom
-              intensity={1}
+              intensity={bloomIntensity}
               luminanceThreshold={0.2}
               luminanceSmoothing={0.9}
             />

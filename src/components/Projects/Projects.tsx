@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useState, useEffect, memo } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import type { ProjectProps } from "@/types/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function FlipCard({ project }: { project: ProjectProps }) {
+const FlipCard = memo(function FlipCard({ project }: { project: ProjectProps }) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -36,6 +36,8 @@ function FlipCard({ project }: { project: ProjectProps }) {
             src={project.imageUrl}
             alt={project.title}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
             <h3 className="text-2xl font-bold text-white mb-2">
@@ -102,7 +104,7 @@ function FlipCard({ project }: { project: ProjectProps }) {
       </motion.div>
     </div>
   );
-}
+});
 
 const projects: ProjectProps[] = [
   {
@@ -174,7 +176,6 @@ function ProjectCard({
 
   return (
     <section
-      id="projects"
       ref={cardRef}
       className={`relative flex flex-col lg:flex-row gap-8 ${
         index % 2 === 1 ? "lg:flex-row-reverse" : ""
@@ -186,6 +187,8 @@ function ProjectCard({
             src={project.imageUrl}
             alt={project.title}
             className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       </div>
@@ -238,8 +241,15 @@ function ProjectCard({
   );
 }
 
+const getParticleBudget = () => {
+  if (typeof window === "undefined") return 500;
+  return window.innerWidth < 1024 ? 150 : 500;
+};
+
 export function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [particleCount, setParticleCount] = useState(getParticleBudget);
+  const [hasEntered, setHasEntered] = useState(false);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -261,15 +271,49 @@ export function Projects() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => setParticleCount(getParticleBudget());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") {
+      setHasEntered(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -20% 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section ref={sectionRef} className="relative py-24 px-4 max-w-7xl mx-auto">
-      <SectionParticles
-        color="#940A31"
-        count={500}
-        size={0.1}
-        opacity={0.2}
-        zIndex={-5}
-      />
+    <section
+      ref={sectionRef}
+      id="projects"
+      className="relative py-24 px-4 max-w-7xl mx-auto"
+    >
+      {hasEntered && (
+        <SectionParticles
+          color="#940A31"
+          count={particleCount}
+          size={0.1}
+          opacity={0.2}
+          zIndex={-5}
+        />
+      )}
       <h2 className="projects-heading text-4xl md:text-5xl font-bold text-center mb-16">
         My Projects
       </h2>

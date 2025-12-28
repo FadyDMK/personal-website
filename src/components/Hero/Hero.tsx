@@ -1,11 +1,11 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { gsap } from "gsap";
 import { Link as ScrollLink } from "react-scroll";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import WaveBackground from "../WaveBackground/WaveBackground";
 
-function TerminalIntro() {
+const TerminalIntro = memo(function TerminalIntro() {
   const [text] = useTypewriter({
     words: [
       "> Full Stack Developer",
@@ -32,9 +32,9 @@ function TerminalIntro() {
       </div>
     </div>
   );
-}
+});
 
-export function Hero({name="Fady Damak"}) {
+export function Hero({name="Fady Damak", onSceneReady}: {name?: string; onSceneReady?: () => void}) {
   const heroRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
@@ -70,7 +70,7 @@ export function Hero({name="Fady Damak"}) {
       ref={heroRef}
       className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 text-center overflow-hidden"
     >
-      <WaveBackground opacity={0.4} />
+      <WaveBackground opacity={0.4} onReady={onSceneReady} />
 
       <div className="max-w-3xl relative z-10">
         <h1

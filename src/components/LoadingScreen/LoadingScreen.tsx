@@ -1,19 +1,18 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { PS2LoadingScreenProps } from '@/types/types';
 
-// Here’s how it works: The 7 dots simply move around a circle, 
+// Here's how it works: The 7 dots simply move around a circle, 
 // increasing the distance from each other while the sine and cosine parts of the circle go 
-// out of sync (this makes it look like the circle is “turning” in space). 
-// Sometimes the dots overlap to give the impression of fewer dots. It’s hard to explain, 
+// out of sync (this makes it look like the circle is "turning" in space). 
+// Sometimes the dots overlap to give the impression of fewer dots. It's hard to explain, 
 // but I find it extremely cool that they chose to use 7 dots (rather than the more pedestrian 8).
 
 
 
 
 
-function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
+function LoadingScreen({ progress = 0 }: PS2LoadingScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>(null);
   const previousTimeRef = useRef<number>(0);
@@ -44,27 +43,6 @@ function LoadingScreen({ onLoadingComplete }: PS2LoadingScreenProps) {
       };
     });
   }, []);
-  
-  // Loading progress simulation
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + Math.random() * 5;
-        
-        if (newProgress >= 100) {
-          clearInterval(timer);
-          setTimeout(() => {
-            onLoadingComplete();
-          }, 500);
-          return 100;
-        }
-        
-        return newProgress;
-      });
-    }, 200);
-    
-    return () => clearInterval(timer);
-  }, [onLoadingComplete]);
   
   // PS2-style animation
   useEffect(() => {

@@ -26,7 +26,7 @@ interface ProjectProps {
 }
 
 interface PS2LoadingScreenProps {
-  onLoadingComplete: () => void;
+  progress?: number;
 }
 
 export type { SkillData, SectionParticlesProps, ProjectProps, PS2LoadingScreenProps };

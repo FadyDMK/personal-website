@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import profilePic from "../../assets/pic.avif";
@@ -7,9 +7,16 @@ import SkillConstellation from "../SkillConstellation/SkillConstellation";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const getAboutParticleBudget = () => {
+  if (typeof window === "undefined") return 200;
+  return window.innerWidth < 768 ? 90 : 200;
+};
+
 export function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [hasEntered, setHasEntered] = useState(false);
+  const [particleCount, setParticleCount] = useState(getAboutParticleBudget);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -47,15 +54,45 @@ export function About() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => setParticleCount(getAboutParticleBudget());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") {
+      setHasEntered(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -20% 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section ref={sectionRef} className="py-24 px-4 bg-secondary/10 relative">
-      <SectionParticles
-        color="#940A31"
-        count={200}
-        size={0.3}
-        opacity={0.2}
-        zIndex={-5}
-      />
+      {hasEntered && (
+        <SectionParticles
+          color="#940A31"
+          count={particleCount}
+          size={0.3}
+          opacity={0.2}
+          zIndex={-5}
+        />
+      )}
       <div className="max-w-4xl mx-auto">
         <h2 className="about-heading text-4xl md:text-5xl font-bold text-center mb-16">
           About Me
@@ -69,6 +106,8 @@ export function About() {
                   src={profilePic}
                   alt="Fady Damak"
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -86,7 +125,14 @@ export function About() {
 
           
           <div className="relative h-[600px] mb-16">
-            <SkillConstellation/>
+            {hasEntered ? (
+              <SkillConstellation />
+            ) : (
+              <div
+                className="w-full h-full rounded-[32px] bg-black/20 animate-pulse"
+                aria-hidden="true"
+              />
+            )}
           </div>
           <h3 className="text-2xl font-bold mt-12 mb-4 pt-[50px]">My Journey</h3>
           <p>
