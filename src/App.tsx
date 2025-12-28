@@ -43,7 +43,7 @@ function App() {
     // Preload images
     const imagePromises = imagesToPreload.map(
       (src) =>
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
           const img = new Image();
           img.onload = () => {
             updateProgress();
