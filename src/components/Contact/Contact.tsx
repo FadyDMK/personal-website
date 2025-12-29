@@ -323,7 +323,7 @@ function Contact() {
 
               <a
                 className="flex items-center gap-2 text-blue-300 hover:text-blue-100 transition-colors"
-                href="https://drive.google.com/file/d/16yu21BUIu0-om1OO3rV_BhfjQk_Feybs/view?usp=sharing"
+                href="https://drive.google.com/file/d/1-aT194awD2e042j9X8X3LoSVeV8Sh2dv/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
               >
